@@ -280,7 +280,8 @@ static void* map_pa_with_memtype(void* pa, mapping_type_t mapping_type, bool_t i
     lru_cache_remove_entry(keyhole_idx);
 
     // If a cached entry is being reused:
-    bool_t flush = (target_keyhole->state == KH_ENTRY_CAN_BE_REMOVED);
+    bool_t flush = (target_keyhole->state == KH_ENTRY_CAN_BE_REMOVED) &&
+                   (target_keyhole->mapped_pa != (uint64_t)pa);
 
     // Remove it from LRU list, remove it from the search hash table, and flush TLB
     if (flush)
@@ -295,7 +296,11 @@ static void* map_pa_with_memtype(void* pa, mapping_type_t mapping_type, bool_t i
     target_keyhole->is_writable = is_writable;
     target_keyhole->is_wb_memtype = is_wb_memtype;
 
-    hash_table_insert_entry((uint64_t)pa, keyhole_idx);
+    if (flush)
+    {
+        hash_table_insert_entry((uint64_t)pa, keyhole_idx);
+    }
+
     fill_keyhole_pte(keyhole_idx, (uint64_t)pa, is_writable, is_wb_memtype);
 
     // Flush the TLB for a reused entry - ***AFTER*** the PTE was updated
