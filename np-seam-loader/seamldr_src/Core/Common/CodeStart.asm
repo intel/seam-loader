@@ -46,6 +46,10 @@ EDATA32	SEGMENT	PUBLIC USE32
         OriginalCR3     dd  00h
         OriginalCR4     dd  00h
         OriginalIDTRLimit dw  00h         ; Original IDTR Limit
+        OriginalES      dw 00h
+        OriginalFS      dw 00h
+        OriginalGS      dw 00h
+        OriginalSS      dw 00h        
         
         PUBLIC R_ACM        
         R_ACM           dq  LBL_ACM
@@ -237,6 +241,14 @@ FixupLoop:
         ;                      
         ; Initialize Stack and Extended Data segments
         ;
+        mov     ax, ES
+        mov     OriginalES, ax
+        mov     ax, FS
+        mov     OriginalFS, ax
+        mov     ax, GS
+        mov     OriginalGS, ax
+        mov     ax, SS
+        mov     OriginalSS, ax        
         mov     ax, ACM_DATA_SELECTOR
         mov     es, ax
         mov     fs, ax

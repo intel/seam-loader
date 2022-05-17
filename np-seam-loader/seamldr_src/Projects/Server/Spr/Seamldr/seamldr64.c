@@ -109,4 +109,11 @@ void Target64 (SEAMLDR_COM64_DATA *pCom64)
         
     SeamldrAcm(pCom64, PtCtx);
     ReopenTPMLocality(PtCtx);
+    *(UINT16*)pCom64->NewGdtr = 0xFFF;
+    *(UINT64*)(pCom64->NewGdtr + 2) = (UINT64)TempGdt;
+    *(UINT64*)(TempGdt + pCom64->OriginalES) = GdtBasePtr.AcmDataDescriptor.Raw;
+    *(UINT64*)(TempGdt + pCom64->OriginalFS) = GdtBasePtr.AcmDataDescriptor.Raw;
+    *(UINT64*)(TempGdt + pCom64->OriginalGS) = GdtBasePtr.AcmDataDescriptor.Raw;
+    *(UINT64*)(TempGdt + pCom64->OriginalSS) = GdtBasePtr.AcmDataDescriptor.Raw;
+    *(UINT64*)(TempGdt + pCom64->OriginalECX) = GdtBasePtr.AcmCode64Descriptor.Raw;
 }

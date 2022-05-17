@@ -285,6 +285,12 @@ _STATIC_INLINE_ void current_vmcs_guest_rip_advance(uint64_t instruction_len)
 }
 
 /**
+ * @brief Only this function should be used when guest RIP is advanced to the next instruction.
+ *        Clears STI blocking and MOVSS blocking interruptibility state, and sets PDE.BS
+ */
+void advance_guest_rip(void);
+
+/**
  * @brief Helper function that determines if range1 is contained inside range2
  * @param addr - Address to be check
  * @param base - Base of range

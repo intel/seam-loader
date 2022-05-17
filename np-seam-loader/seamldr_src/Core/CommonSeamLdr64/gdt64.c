@@ -14,13 +14,14 @@
 //*                                                                    *;
 //**********************************************************************;
 
-#include "common.h"
-#include "Header.h"
-#include "NpSeamldr.h"
-#include "vmcs.h"
+#include <common.h>
+#include <header.h>
 
-SeamldrData_t SeamldrData = { 0 };
-UINT8  VmcsBuffer[VMCS_SIZE];
-UINT8  TempGdt[PAGE4K] = { 0 };
+GDT GdtBasePtr = {
+  {0,0,0,0,0,0,0},
+  {0xFFFF,0,0,0,0x9B,0xCF,0},
+  {0xFFFF,0,0,0,0x93,0xCF,0},
+  {0xFFFF,0,0,0,0x9B,0xAF,0}
+};
 
 

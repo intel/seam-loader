@@ -102,6 +102,7 @@ UINT64 VerifyManifest(P_SYS_INFO_TABLE_t* SysInfoTable, UINT32 Scenario, BOOL Is
 
 extern SeamldrData_t SeamldrData;
 extern UINT8  VmcsBuffer[VMCS_SIZE];
+extern UINT8  TempGdt[PAGE4K];
 
 UINT64 memcpy_s(void* dest, UINTN destSize, const void* src, UINTN count);
 

@@ -63,6 +63,41 @@ typedef struct vmcs_header_s
 } vmcs_header_t;
 pseamldr_static_assert(sizeof(vmcs_header_t) == 8, vmcs_header_t);
 
+typedef union vmx_guest_inter_state_u
+{
+    struct
+    {
+        uint32_t blocking_by_sti      : 1;   // 0
+        uint32_t blocking_by_mov_ss   : 1;   // 1
+        uint32_t blocking_by_smi      : 1;   // 2
+        uint32_t blocking_by_nmi      : 1;   // 3
+        uint32_t enclave_interruption : 1;   // 4
+        uint32_t reserved             : 27;  // 31:5
+    };
+    uint64_t raw;
+} vmx_guest_inter_state_t;
+pseamldr_static_assert(sizeof(vmx_guest_inter_state_t) == 8, vmx_guest_inter_state_t);
+
+typedef union
+{
+    struct
+    {
+        uint64_t b0          : 1; // Bit 0
+        uint64_t b1          : 1; // Bit 1
+        uint64_t b2          : 1; // Bit 2
+        uint64_t b3          : 1; // Bit 3
+        uint64_t rsvd_0      : 8; // Bits 4-11
+        uint64_t enable      : 1; // Bit 12
+        uint64_t rsvd_1      : 1; // Bits 13
+        uint64_t bs          : 1; // Bits 14
+        uint64_t rsvd_2      : 1; // Bits 15
+        uint64_t rtm         : 1; // Bits 16
+        uint64_t rsvd_3      : 47;// Bits 17-63
+    };
+    uint64_t raw;
+} pending_debug_exception_t;
+pseamldr_static_assert(sizeof(pending_debug_exception_t) == 8, pending_debug_exception_t);
+
 #define IA32_VMX_BASIC_MSR_ADDR               0x480
 #define IA32_VMX_PINBASED_CTLS_MSR_ADDR       0x481
 #define IA32_VMX_PROCBASED_CTLS_MSR_ADDR      0x482
@@ -131,7 +166,10 @@ pseamldr_static_assert(sizeof(vmcs_header_t) == 8, vmcs_header_t);
 #define wr_vmcs_revision_id( VMCS_P, VAL )  Wr_32B_at_VMCS_Offset(VMCS_P, VAL, VMX_VMCS_REVISION_ID_OFFSET)
 
 #define VMX_GUEST_RIP_ENCODE                    0x681EULL
+#define VMX_GUEST_INTERRUPTIBILITY_ENCODE  0x4824ULL
 #define VMX_VM_EXIT_INSTRUCTION_LENGTH_ENCODE   0x440CULL
+#define VMX_GUEST_RFLAGS_ENCODE  0x6820ULL
+#define VMX_GUEST_PND_DEBUG_EXCEPTION_ENCODE  0x6822ULL
 #define VMX_GUEST_IA32_DEBUGCTLMSR_FULL_ENCODE  0x2802ULL
 #define VMX_HOST_FS_BASE_ENCODE                 0x6C06ULL
 

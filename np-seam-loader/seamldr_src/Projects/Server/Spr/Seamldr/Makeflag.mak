@@ -241,7 +241,7 @@ generate_makefile_header_file:
 // Security Version Number
 //
 #define MCP_ACM_SVN                 0
-#define MCP_SE_SVN                  0    // Update to >=1 for PV and post PV releases
+#define MCP_SE_SVN                  3    // Update to >=1 for PV and post PV releases
 
 #define LCP_ELT_SELECTION           $(LCP_ELT_SELECTION)
 #define MKF_LCP_POLELT_TYPE_MLE_SUPPORTED       $(MKF_LCP_POLELT_TYPE_MLE_SUPPORTED)

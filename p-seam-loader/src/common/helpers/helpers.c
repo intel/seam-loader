@@ -199,3 +199,39 @@ void ia32_safe_cpuid(uint32_t leaf, uint32_t subleaf, uint32_t *eax, uint32_t *e
     }          
 }
 
+static void clear_movss_sti_blocking(void)
+{
+    vmx_guest_inter_state_t guest_inter_state;
+    ia32_vmread(VMX_GUEST_INTERRUPTIBILITY_ENCODE, &guest_inter_state.raw);
+
+    if (guest_inter_state.blocking_by_mov_ss != 0 || guest_inter_state.blocking_by_sti != 0)
+    {
+        guest_inter_state.blocking_by_mov_ss = 0;
+        guest_inter_state.blocking_by_sti = 0;
+        ia32_vmwrite(VMX_GUEST_INTERRUPTIBILITY_ENCODE, guest_inter_state.raw);
+    }
+}
+
+static void set_guest_pde_bs(void)
+{
+    ia32_rflags_t rflags;
+    ia32_vmread(VMX_GUEST_RFLAGS_ENCODE, &rflags.raw);
+
+    ia32_debugctl_t debugctl;
+    ia32_vmread(VMX_GUEST_IA32_DEBUGCTLMSR_FULL_ENCODE, &debugctl.raw);
+
+    pending_debug_exception_t pde;
+    ia32_vmread(VMX_GUEST_PND_DEBUG_EXCEPTION_ENCODE, &pde.raw);
+
+    pde.bs = (rflags.tf == 1 && debugctl.btf == 0) ? 1 : 0;
+    ia32_vmwrite(VMX_GUEST_PND_DEBUG_EXCEPTION_ENCODE, pde.raw);
+}
+
+void advance_guest_rip(void)
+{
+    current_vmcs_guest_rip_advance(0);
+
+    clear_movss_sti_blocking();
+    set_guest_pde_bs();
+}
+

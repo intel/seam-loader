@@ -305,12 +305,15 @@ typedef struct _IDT32GATE {
 
 #define IDT32GATE_INIT_1 0x8E00
 
-typedef struct _GDT32DESCRIPTOR {
-    UINT16  Limit15_0;
-    UINT8   Base23_0[3];
-    UINT8   Attr;
-    UINT8   Attr_Limit19_16;
-    UINT8   Base31_24;
+typedef union {
+    struct _GDT32DESCRIPTOR {
+        UINT16  Limit15_0;
+        UINT8   Base23_0[3];
+        UINT8   Attr;
+        UINT8   Attr_Limit19_16;
+        UINT8   Base31_24;
+    };
+    UINT64  Raw;
 } GDT32DESCRIPTOR;
 
 typedef struct _GDT {
@@ -341,6 +344,10 @@ extern  UINT32 OriginalEDX;
 extern  UINT32 OriginalCR3;
 extern  UINT32 OriginalCR0;
 extern  UINT32 OriginalCR4;
+extern  UINT16 OriginalES;
+extern  UINT16 OriginalFS;
+extern  UINT16 OriginalGS;
+extern  UINT16 OriginalSS;
 extern  ACM_HEADER_3 HeaderStart;
 extern  ACM_INFO_TABLE AcmInfoTableStart;
 extern  GDT GdtBasePtr;

@@ -178,7 +178,7 @@ EXIT:
 
 void pseamldr_post_dispatching(void)
 {
-    current_vmcs_guest_rip_advance(0);
+    advance_guest_rip();
 
     // Restore IA32_SPEC_CTRL
     ia32_wrmsr(IA32_SPEC_CTRL_MSR_ADDR, get_pseamldr_data()->vmm_spec_ctrl.raw);

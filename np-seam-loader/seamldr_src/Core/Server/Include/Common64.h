@@ -66,6 +66,11 @@ typedef struct {
   UINT64 OriginalR12;
   UINT64 OriginalCR3;
   UINT32 OriginalCR4;
+  UINT16 OriginalES;
+  UINT16 OriginalFS;
+  UINT16 OriginalGS;
+  UINT16 OriginalSS;
+  UINT32 OriginalECX;
   UINT16 OriginalIDTRLimit;
   IDTR   NewIDTR;
   UINT8  OriginalGdtr[10];
@@ -76,6 +81,7 @@ typedef struct {
   UINT32 PseamldrSize;
   UINT64 PseamldrOffset;
   UINT64 PseamldrConstsOffset;
+  UINT8  NewGdtr[10];
 } SEAMLDR_COM64_DATA;
 
 

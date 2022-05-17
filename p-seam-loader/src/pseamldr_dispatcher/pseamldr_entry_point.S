@@ -12,6 +12,8 @@
  */
 #include "data_structures/pseamldr_data_offsets.h"
 
+#define NUM_OF_BHB_CLEARING_ITERATIONS				32
+
 .hidden pseamldr_dispatcher
 
 .section .text
@@ -59,6 +61,27 @@ pseamldr_entry_point:
     xor %r13,  %r13
     xor %r14,  %r14
     xor %r15,  %r15
+
+    lfence
+
+    /**
+     * BHB-clearing sequence
+     */
+    movq $NUM_OF_BHB_CLEARING_ITERATIONS, %rcx
+
+1:  call 2f
+    lfence
+2:  jmp 3f
+    nop
+3:  jmp 4f
+    nop
+4:  jmp 5f
+    nop
+5:  jmp 6f
+    nop
+6:  dec %rcx
+    jnz 1b
+    add $NUM_OF_BHB_CLEARING_ITERATIONS * 8, %rsp // drop return addresses from stack
 
     lfence
 

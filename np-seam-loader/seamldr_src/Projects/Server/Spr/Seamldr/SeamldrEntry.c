@@ -207,7 +207,7 @@ PT_CTX* EstablishSeamldrPaging(SEAMLDR_COM64_DATA *pCom64, IN OUT PT_CTX * PtCtx
     writeMsr(IA32_EFER_MSR, RDX, RAX);
 
     // Enable paging
-    __writecr0(__readcr0() | CR0_PG);
+    __writecr0(__readcr0() | CR0_PG | CR0_WP);
     
     return PtCtx;
 }
@@ -225,6 +225,11 @@ void ProjectAcmEntryPoint()
     SeamldrCom64Data.PseamldrOffset = (UINT64)&PSeamldrAsm;
     SeamldrCom64Data.PseamldrSize = PSeamldrSizeAsm;
     SeamldrCom64Data.PseamldrConstsOffset = (UINT64)&PSeamldrConstAsm;
+    SeamldrCom64Data.OriginalES = OriginalES & 0x0FF8;
+    SeamldrCom64Data.OriginalFS = OriginalFS & 0x0FF8;
+    SeamldrCom64Data.OriginalGS = OriginalGS & 0x0FF8;
+    SeamldrCom64Data.OriginalSS = OriginalSS & 0x0FF8;
+    SeamldrCom64Data.OriginalECX = OriginalECX & 0x0FF8;
 
     MemFill((UINT8*)&SeamldrPagingTable, sizeof(SEAMLDR_PAGING_TABLE_T), 0);
 

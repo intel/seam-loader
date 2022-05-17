@@ -76,7 +76,29 @@ Entry64 PROC FRAME
         ;; Exit procedure:
         
         mov     rcx, pCom64data
+        
+        
+        lgdt    FWORD PTR [rcx].SEAMLDR_COM64_DATA.NewGdtr
+        
+        
+        mov     ax, WORD PTR [rcx].SEAMLDR_COM64_DATA.OriginalES
+        mov     es, ax
+        mov     ds, ax
+        mov     ax, WORD PTR [rcx].SEAMLDR_COM64_DATA.OriginalFS
+        mov     fs, ax
+        mov     ax, WORD PTR [rcx].SEAMLDR_COM64_DATA.OriginalGS
+        mov     gs, ax        
+        mov     ax, WORD PTR [rcx].SEAMLDR_COM64_DATA.OriginalSS
+        mov     ss, ax        
+        
+        mov     eax, DWORD PTR [rcx].SEAMLDR_COM64_DATA.OriginalECX        
+        push    rax
+        mov     rax,  OFFSET  _restored_cs
+        push    rax
 
+        retfq   
+        _restored_cs:
+        
         lgdt    FWORD PTR [rcx].SEAMLDR_COM64_DATA.OriginalGdtr
         
         ;; turn off PCIDE bit in current CR4
@@ -92,6 +114,10 @@ Entry64 PROC FRAME
         and     edx, (CR4_LA57 OR CR4_PGE)
         or      edx, (CR4_SMXE OR CR4_PAE)
         mov     cr4, rdx
+        
+        mov     rdx, cr0
+        and     edx, (not CR0_WP)
+        mov     cr0, rdx
         
 DoExitAC:
 
